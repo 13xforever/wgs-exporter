@@ -22,6 +22,11 @@ foreach (var p in packages)
 
     gamePackages[Path.GetFileName(p)] = Path.Combine(wgsPath, wgsDataFolders.First(n => n is not "t")!);
 }
+if (gamePackages.Count is 0)
+{
+    Console.WriteLine("No save data found. You have to have the game installed and launched at least once to sync the save data.");
+    return -1;
+}
 
 var idList = new List<string>(gamePackages.Count);
 var maxName = gamePackages.Keys.Max(n => n.Length);
@@ -46,7 +51,7 @@ var pkgName = idList[idx];
 */
 foreach (var (pkgName, path) in gamePackages)
 {
-    Console.WriteLine($"Exporting {pkgName} save data...");
+    Console.WriteLine($"Exporting {pkgName} save data…");
     var pkgOutPath = Path.Combine(baseOutput, pkgName);
     var wgsContainerIndexPath = Path.Combine(path, "containers.index");
     await using var stream = File.Open(wgsContainerIndexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -75,5 +80,5 @@ foreach (var (pkgName, path) in gamePackages)
     }
 }
 
-
 Console.WriteLine("Done.");
+return 0;
